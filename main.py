@@ -1,10 +1,33 @@
-import cv2 
+import cv2
+import numpy as np 
+
+threshold = 0.60
 
 #read image 
-img = cv2.imread('farm.png')
+farmImg = cv2.imread('farm.png')
+wheatImg = cv2.imread('wheat.png')
  
-#show image
-cv2.imshow('Example - Show image in window',img)
- 
+result = cv2.matchTemplate(farmImg, wheatImg, cv2.TM_CCOEFF_NORMED)
+
+yLoc, xLoc = np.where(result >= threshold)
+
+minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(result)
+
+w = wheatImg.shape[1]
+h = wheatImg.shape[0]
+
+rectangles = []
+
+for (x, y) in zip(xLoc, yLoc):
+    rectangles.append([int(x), int(y), int(w), int(h)])
+    rectangles.append([int(x), int(y), int(w), int(h)])
+
+rectangles, weights = cv2.groupRectangles(rectangles, 1, 0.3)
+
+for (x, y, w, h) in rectangles:
+    cv2.rectangle(farmImg, (x, y), (x + w, y + h), (0, 255, 255), 3)
+
+cv2.imshow('Farm Image', farmImg)
+
 cv2.waitKey(0) # waits until a key is pressed
 cv2.destroyAllWindows() # destroys the window showing image
