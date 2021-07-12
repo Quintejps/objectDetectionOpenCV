@@ -34,5 +34,8 @@ for (x, y, w, h) in rectangles:
 #Show image farmImg
 cv2.imshow('Farm Image', farmImg)
 
+#Save image farmImg
+cv2.imwrite('result.png', farmImg)
+
 cv2.waitKey(0) # waits until a key is pressed
 cv2.destroyAllWindows() # destroys the window showing image
